@@ -1,26 +1,36 @@
 const express = require('express');
-var cors = require('cors');
 
 const app = express();
+const Song = require('./models/song');
+var cors = require('cors');
+
 app.use(cors());
+
+app.use(express.json());
+
 const router = express.Router();
 
-router.get('/songs', (req, res) => {
-    const songs = [
-        {
-            title: 'Hello',
-            artist: 'Adele',
-            popularity: 10,
-            genre: ["funk", "boogie"]
-        },
-        {
-            title: 'Happy',
-            artist: 'Pharrell Williams',
-            popularity: 9,
-            genre: ["pop", "dancehall"]
-        }
-    ];
-    res.json(songs);
+router.get('/songs', async (req, res) => {
+    try {
+        const songs = await Song.find({});
+        res.send(songs);
+        console.log(songs);
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
+
+router.post('/songs', async(req, res) => {
+    try {
+        const song = new Song(req.body);
+        await song.save();
+        res.status(201).json(song);
+        console.log(song);
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message });
+    }
 });
 
 app.use('/api', router);
