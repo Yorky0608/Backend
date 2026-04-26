@@ -8,6 +8,10 @@ app.use(cors());
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.send('Backend is running!');
+});
+
 const router = express.Router();
 
 router.get('/songs', async (req, res) => {
